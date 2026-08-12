@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  description: MyString
+  amount: 9.99
+  purpose: 1
+  date_at: 2026-08-11
+
+two:
+  description: MyString
+  amount: 9.99
+  purpose: 1
+  date_at: 2026-08-11
