@@ -13,6 +13,12 @@ class TransactionController < ApplicationController
     @params_create = transaction_params_create
     @new_transaction = Transaction.new(@params_create)
 
+    if !@params_create[:date_at].blank?
+      @new_transaction.date_at = @params_create[:date_at]
+    else
+      @new_transaction.date_at = Date.current
+    end
+
     if @new_transaction.save
       render json: { new_transaction: @new_transaction }, status: :created
     else
