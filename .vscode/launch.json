@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "rdbg",
+      "name": "Rails: Start local servr (F5)",
+      "request": "launch",
+      "script": "bin/rails",
+      "args": ["server"],
+      "askParameters": false,
+      // Mudança aqui: força a abertura automática da aba do terminal
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "openOnSessionStart",
+       "rdbgExtensions": [
+        { "command": "rm -f tmp/pids/server.pid" }
+      ]
+    }
+  ]
+}

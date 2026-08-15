@@ -1,0 +1,29 @@
+class TransactionController < ApplicationController
+  def index
+    @transaction = Transaction.all
+    render json: @transaction
+  end
+
+  def getById
+    @transactionId = params[:id]
+    @transaction = Transaction.find(@transactionId)
+  end
+
+  def create
+    @params_create = transaction_params_create
+    @new_transaction = Transaction.new(@params_create)
+
+    if @new_transaction.save
+      render json: { new_transaction: @new_transaction }, status: :created
+    else
+      render json: @new_transaction.errors, status: :unprocessable_entity
+    end
+
+    render json: { new_transaction: @new_transaction }, status: :created
+  end
+
+  private
+  def transaction_params_create
+    params.require(:transaction).permit(:amount, :description, :date_at)
+  end
+end
