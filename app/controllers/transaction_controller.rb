@@ -5,8 +5,7 @@ class TransactionController < ApplicationController
   end
 
   def getById
-    @transactionId = params[:id]
-    @transaction = Transaction.find(@transactionId)
+    @transaction = Transaction.find(params[:id])
   end
 
   def create
@@ -26,6 +25,12 @@ class TransactionController < ApplicationController
     end
 
     render json: { new_transaction: @new_transaction }, status: :created
+  end
+
+  def destroy
+    @transaction = Transaction.find(params[:id])
+    @transaction.destroy
+    render json: {}, status: :no_content
   end
 
   private
