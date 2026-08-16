@@ -6,6 +6,7 @@ class TransactionController < ApplicationController
 
   def getById
     @transaction = Transaction.find(params[:id])
+    render json: @transaction
   end
 
   def create
@@ -18,13 +19,15 @@ class TransactionController < ApplicationController
       @new_transaction.date_at = Date.current
     end
 
+    if !@params_create[:purpose].blank? && (@params_create[:purpose] > 2 || @params_create[:purpose] == 0)
+      render json: { error: "Send a valid value to purpose field between 1 - incoming or 2 - outgoing" }, status: :bad_request and return
+    end
+
     if @new_transaction.save
       render json: { new_transaction: @new_transaction }, status: :created
     else
-      render json: @new_transaction.errors, status: :unprocessable_entity
+      render json: @new_transaction.errors, status: :unprocessable_entity and return
     end
-
-    render json: { new_transaction: @new_transaction }, status: :created
   end
 
   def destroy
@@ -35,6 +38,6 @@ class TransactionController < ApplicationController
 
   private
   def transaction_params_create
-    params.require(:transaction).permit(:amount, :description, :date_at)
+    params.require(:transaction).permit(:amount, :description, :date_at, :purpose)
   end
 end
