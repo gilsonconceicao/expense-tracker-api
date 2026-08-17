@@ -4,7 +4,7 @@ class TransactionController < ApplicationController
     render json: @transaction
   end
 
-  def getById
+  def get_by_id
     @transaction = Transaction.find(params[:id])
     render json: @transaction
   end
@@ -30,14 +30,29 @@ class TransactionController < ApplicationController
     end
   end
 
+  def update
+    @transaction = Transaction.find(params[:id])
+
+    if @transaction.update(transaction_params_update)
+      render json: { updated_transaction: @transaction }, status: :ok
+    else
+      render json: @transaction.errors, status: :unprocessable_entity and return
+    end
+  end
+
   def destroy
     @transaction = Transaction.find(params[:id])
     @transaction.destroy
-    render json: {}, status: :no_content
+    head :no_content
   end
 
   private
   def transaction_params_create
     params.require(:transaction).permit(:amount, :description, :date_at, :purpose)
+  end
+
+  private
+  def transaction_params_update
+    params.require(:transaction).permit(:amount, :description, :purpose)
   end
 end
