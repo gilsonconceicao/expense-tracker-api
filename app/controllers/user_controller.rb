@@ -35,11 +35,28 @@ class UserController < ApplicationController
     render json: { errors: e.record.errors }, status: :unprocessable_entity
   end
 
+  def create_transaction_by_user
+    @user = User.find(params[:id])
+    Transaction.transaction do
+      @related_transaction = Transaction.new(transaction_model_create)
+      @related_transaction.user_id = @user.id
+      if @related_transaction.save
+        render json: @related_transaction, status: :created and return
+      else
+        render json: @related_transaction.errors, status: :unprocessable_entity and return
+      end
+    end
+  end
+
   private
   def user_model_create
     params.permit(
       :name,
       :email,
       address: [ :zipcode, :city, :state, :number, :street ])
+  end
+
+  def transaction_model_create
+    params.permit(:amount, :description, :date_at, :purpose)
   end
 end
