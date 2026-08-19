@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # User routes
   get "/user", to: "user#index"
+  get "/user/:id", to: "user#get_user_by_Id"
   post "/user", to: "user#create"
   # Transaction routes
   get "/transaction", to: "transaction#index"
