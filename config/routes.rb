@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   # User routes
   get "/user", to: "user#index"
   get "/user/:id", to: "user#get_user_by_Id"
+  get "/user/:id/transactions", to: "user#get_transaction_by_user_id"
   post "/user", to: "user#create"
   # Transaction routes
   get "/transaction", to: "transaction#index"

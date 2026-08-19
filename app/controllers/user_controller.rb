@@ -9,6 +9,12 @@ class UserController < ApplicationController
     render json: @user, include: [ :transactions, :address ] and return
   end
 
+  def get_transaction_by_user_id
+    @user = User.find(params[:id])
+    @transactions = Transaction.where({ user_id: @user.id })
+    render json: @transactions, status: :ok and return
+  end
+
   def create
     @create_model = user_model_create
     @new_user = User.new(@create_model.except(:address))
