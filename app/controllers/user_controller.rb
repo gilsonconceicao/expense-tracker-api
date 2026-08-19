@@ -1,12 +1,12 @@
 class UserController < ApplicationController
   def index
     @users = User.includes(:address).all
-    render json: @users, include: :address
+    render json: @users, **user_json_options
   end
 
   def get_user_by_Id
     @user = User.includes(:address, :transactions).find(params[:id])
-    render json: @user, include: [ :transactions, :address ] and return
+    render json: @user, **user_json_options
   end
 
   def get_transaction_by_user_id
@@ -49,6 +49,24 @@ class UserController < ApplicationController
   end
 
   private
+  def user_json_options
+    {
+      only: [ :id, :email ],
+      include: [
+        {
+          address: {
+            only: [ :id, :zipcode, :street, :city ]
+          }
+        },
+        {
+          transactions: {
+            only: [ :id, :amount, :date_at ]
+          }
+        }
+      ]
+    }
+  end
+
   def user_model_create
     params.permit(
       :name,

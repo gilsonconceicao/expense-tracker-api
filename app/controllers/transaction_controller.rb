@@ -1,12 +1,12 @@
 class TransactionController < ApplicationController
   def index
     @transaction = Transaction.all
-    render json: @transaction
+    render json: @transaction, **transaction_json_object
   end
 
   def get_by_id
     @transaction = Transaction.find(params[:id])
-    render json: @transaction
+    render json: @transaction, **transaction_json_object
   end
 
   def create
@@ -52,11 +52,23 @@ class TransactionController < ApplicationController
   end
 
   private
+  def transaction_json_object
+    {
+      only: [ :id, :description, :amount, :date_at ],
+      include: [
+        {
+          user: {
+            only:  [ :id, :name, :email, :created_at ]
+          }
+        }
+      ]
+    }
+  end
+
   def transaction_model_create
     params.require(:transaction).permit(:amount, :description, :date_at, :purpose, :user_id)
   end
 
-  private
   def transaction_model_update
     params.require(:transaction).permit(:amount, :description, :purpose)
   end
