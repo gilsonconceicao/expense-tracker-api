@@ -35,17 +35,20 @@ class UserController < ApplicationController
     render json: { errors: e.record.errors }, status: :unprocessable_entity
   end
 
-  def create_transaction_by_user
+  def create_batch_transaction_by_user
     @user = User.find(params[:id])
+    @transactions_created = []
     Transaction.transaction do
-      @related_transaction = Transaction.new(transaction_model_create)
-      @related_transaction.user_id = @user.id
-      if @related_transaction.save
-        render json: @related_transaction, status: :created and return
-      else
-        render json: @related_transaction.errors, status: :unprocessable_entity and return
+      transaction_batch_model_create.each do |model|
+        @new_transaction = Transaction.new(model)
+        @new_transaction.user_id = @user.id
+        @new_transaction.save!
+        @transactions_created<<@new_transaction
       end
     end
+    render json: @transactions_created, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { errors: e.record.errors }, status: :unprocessable_entity
   end
 
   private
@@ -74,7 +77,7 @@ class UserController < ApplicationController
       address: [ :zipcode, :city, :state, :number, :street ])
   end
 
-  def transaction_model_create
-    params.permit(:amount, :description, :date_at, :purpose)
+  def transaction_batch_model_create
+    params.permit(items_transactions: [ :amount, :description, :date_at, :purpose ])[:items_transactions]
   end
 end
