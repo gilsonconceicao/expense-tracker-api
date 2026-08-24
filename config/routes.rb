@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   # Transaction routes
   get "/transaction", to: "transaction#index"
   get "/transaction/:id", to: "transaction#get_by_id"
-  post "/transaction", to: "transaction#create"
+  post "/transaction/:user_id", to: "transaction#create"
   put "/transaction/:id", to: "transaction#update"
   delete "/transaction/:id", to: "transaction#destroy"
 

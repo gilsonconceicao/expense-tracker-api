@@ -11,27 +11,23 @@ class TransactionController < ApplicationController
 
   def create
     @params_create = transaction_model_create
-    @new_transaction = Transaction.new(@params_create)
+    @user = User.find(params[:user_id])
 
     if !@params_create[:purpose].blank? && (@params_create[:purpose] > 2 || @params_create[:purpose] == 0)
       render json: { error: "Send a valid value to purpose field between 1 - incoming or 2 - outgoing" }, status: :bad_request and return
     end
 
-    Transaction.transaction do
-      if !@params_create[:date_at].blank?
-        @new_transaction.date_at = @params_create[:date_at]
-      else
-        @new_transaction.date_at = Date.current
-      end
+    transaction = CreateTransaction.call(
+      user: @user,
+      model: @params_create
+    )
 
-      @user = User.find(@params_create[:user_id])
-      @new_transaction.user_id = @user.id
-
-      if @new_transaction.save
-        render json: { new_transaction: @new_transaction }, status: :created
-      else
-        render json: @new_transaction.errors, status: :unprocessable_entity and return
-      end
+    if transaction.persisted?
+      render json: transaction, status: :created
+    else
+      render json: {
+        errors: transaction.errors
+      }, status: :unprocessable_entity
     end
   end
 
@@ -66,7 +62,7 @@ class TransactionController < ApplicationController
   end
 
   def transaction_model_create
-    params.require(:transaction).permit(:amount, :description, :date_at, :purpose, :user_id)
+    params.require(:transaction).permit(:amount, :description, :date_at, :purpose)
   end
 
   def transaction_model_update
