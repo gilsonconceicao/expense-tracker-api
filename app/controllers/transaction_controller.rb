@@ -33,11 +33,19 @@ class TransactionController < ApplicationController
 
   def update
     @transaction = Transaction.find(params[:id])
+    @body = transaction_model_update
 
-    if @transaction.update(transaction_model_update)
-      render json: { updated_transaction: @transaction }, status: :ok
+    updated_transaction = UpdateTransaction.call(
+      transaction: @transaction,
+      model: @body
+    )
+
+    if updated_transaction
+      render json: {}, status: :no_content
     else
-      render json: @transaction.errors, status: :unprocessable_entity and return
+      render json: {
+        errors: updated_transaction.errors
+      }, status: :unprocessable_entity
     end
   end
 

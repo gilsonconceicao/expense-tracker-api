@@ -2,6 +2,7 @@ class CreateTransaction
   def self.call(user:, model:)
     new(user, model).call
   end
+
   def initialize(user, model)
     @user = user
     @model = model
