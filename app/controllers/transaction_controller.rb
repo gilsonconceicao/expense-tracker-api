@@ -62,7 +62,7 @@ class TransactionController < ApplicationController
       include: [
         {
           user: {
-            only:  [ :id, :name, :email, :created_at ]
+            only:  [ :id, :name, :email_address, :created_at ]
           }
         }
       ]

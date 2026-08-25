@@ -26,7 +26,7 @@ class UserController < ApplicationController
           @new_user.create_address!(@create_model[:address])
         end
 
-        render json: @new_user, status: :created
+        render json: @new_user, **user_json_options
       else
         render json: @new_user.errors, status: :unprocessable_entity and return
       end
@@ -54,7 +54,7 @@ class UserController < ApplicationController
   private
   def user_json_options
     {
-      only: [ :id, :email ],
+      only: [ :id, :email_address ],
       include: [
         {
           address: {
@@ -73,7 +73,8 @@ class UserController < ApplicationController
   def user_model_create
     params.permit(
       :name,
-      :email,
+      :email_address,
+      :password,
       address: [ :zipcode, :city, :state, :number, :street ])
   end
 
