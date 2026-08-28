@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  post "/signup", to: "sessions#create"
+  post "/login", to: "sessions#login"
+
   # User routes
   get "/user", to: "user#index"
   get "/user/:id", to: "user#get_user_by_Id"

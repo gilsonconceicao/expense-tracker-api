@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_18_005757) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_25_023432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_18_005757) do
     t.index ["user_id"], name: "index_addresses_on_user_id"
   end
 
+  create_table "sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "ip_address"
+    t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.uuid "user_id", null: false
+    t.index ["user_id"], name: "index_sessions_on_user_id"
+  end
+
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.decimal "amount"
     t.datetime "created_at", null: false
@@ -39,11 +48,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_18_005757) do
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "email"
+    t.string "email_address"
     t.string "name"
+    t.string "password_digest"
     t.datetime "updated_at", null: false
   end
 
   add_foreign_key "addresses", "users"
+  add_foreign_key "sessions", "users"
   add_foreign_key "transactions", "users"
 end

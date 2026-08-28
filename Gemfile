@@ -19,3 +19,7 @@ group :development, :test do
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
 end
+
+gem "bcrypt", "~> 3.1"
+
+gem "jwt", "~> 3.2"
